@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract CryptoCoders is ERC721, ERC721Enumerable {
 
-    string[] public coders; // 코더 배열
+    // string[] public coders; // 코더 배열
 
     // 코더 존재여부 매핑
     mapping(string => bool) _coderExists;
@@ -16,15 +16,23 @@ contract CryptoCoders is ERC721, ERC721Enumerable {
         
     }
 
-    function mint(string memory coder) public {
+    struct coder {
+        string name;
+        uint voteCount;
+    }
+
+    coder[] public coders;
+
+    function mint(string memory name) public {
         // coder가 없다면 
-        require(!_coderExists[coder]);
+        require(!_coderExists[name]);
+        require(coders.length < 5);
         // nft 권리와 함께 들어갈 이름
-        coders.push(coder);
+        coders.push(coder(name,0));
         // coders가 어디에 있는지 찾기
         uint _id = coders.length - 1;
         _mint(msg.sender, _id);
-        _coderExists[coder] = true;
+        _coderExists[name] = true;
     }
 
     function _beforeTokenTransfer(address from, address to, uint256 tokenId)
