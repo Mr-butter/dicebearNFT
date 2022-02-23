@@ -1,11 +1,4 @@
-require("dotenv").config();
-const HDWalletProvider = require("@truffle/hdwallet-provider");
 
-//Account credentials from which our contract will be deployed
-const mnemonic = process.env.MNEMONIC;
-
-//API key of your Datahub account for Avalanche Fuji test network
-const APIKEY = process.env.APIKEY;
 const path = require("path");
 
 module.exports = {
