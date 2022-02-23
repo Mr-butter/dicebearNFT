@@ -43,6 +43,13 @@ const App = () => {
     }
   };
 
+  const updateData = async () => {
+    const web3 = await getWeb3();
+    await loadWeb3Account(web3);
+    let contract = await loadWebContract(web3);
+    await loadNFTS(contract);
+  };
+
   // load WEB3 account from Metmask
   // load the contract
   // load all the NFTs
@@ -112,7 +119,7 @@ const App = () => {
                 >
                   <img
                     width="150"
-                    src={`https://avatars.dicebear.com/api/pixel-art/${coder.replace(
+                    src={`https://avatars.dicebear.com/api/micah/${coder.replace(
                       "#",
                       ""
                     )}.svg`}
