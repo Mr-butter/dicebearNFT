@@ -17,23 +17,41 @@ contract CryptoCoders is ERC721, ERC721Enumerable {
     }
 
     struct coder {
+        uint id;
         string name;
         uint voteCount;
     }
 
     coder[] public coders;
 
+        mapping(address => bool) public voters;
+
     function mint(string memory name) public {
         // coder가 없다면 
         require(!_coderExists[name]);
         require(coders.length < 5);
         // nft 권리와 함께 들어갈 이름
-        coders.push(coder(name,0));
+        coders.push(coder(coders.length,name,0));
         // coders가 어디에 있는지 찾기
         uint _id = coders.length - 1;
         _mint(msg.sender, _id);
         _coderExists[name] = true;
     }
+
+        function vote(uint _coderid) public {
+        // => 투표용 디앱(컨트랙트)를 구동한자가 투표자
+        require(!voters[msg.sender]);
+        require(_coderid >= 0);
+        // 투표 진행 
+        voters[msg.sender] = true;
+        // 투표수 증가
+        coders[_coderid].voteCount++;
+        // total 득표수 증가
+        // numVote++;
+        // emit sendMsg("투표 complete");
+   
+    }
+
 
     function _beforeTokenTransfer(address from, address to, uint256 tokenId)
         internal
