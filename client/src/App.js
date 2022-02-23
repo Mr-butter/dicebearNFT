@@ -66,7 +66,7 @@ const App = () => {
     contract.methods.mint(mintText).send({ from: account }, (error) => {
       console.log("worked");
       if (!error) {
-        setCoders([...coders, mintText]);
+        // setCoders([...coders, mintText]);
         setMintText("");
       }
     });
@@ -119,12 +119,15 @@ const App = () => {
                 >
                   <img
                     width="150"
-                    src={`https://avatars.dicebear.com/api/micah/${coder.replace(
+                    src={`https://avatars.dicebear.com/api/micah/${coder.name.replace(
                       "#",
                       ""
                     )}.svg`}
                   />
-                  <span>{coder}</span>
+
+                  <span>{coder.name}</span>
+                  <span>{coder.voteCount}</span>
+                  <button type="submit">제출하기</button>
                 </div>
               ))}
             </div>
