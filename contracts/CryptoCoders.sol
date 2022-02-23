@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract CryptoCoders is ERC721, ERC721Enumerable {
 
-    // string[] public coders; // 코더 배열
-
+    bool public ElectionResult = false;
+uint public VotingCount = 0;
     // 코더 존재여부 매핑
     mapping(string => bool) _coderExists;
 
@@ -20,6 +20,7 @@ contract CryptoCoders is ERC721, ERC721Enumerable {
         uint id;
         string name;
         uint voteCount;
+        bool result;
     }
 
     coder[] public coders;
@@ -31,7 +32,7 @@ contract CryptoCoders is ERC721, ERC721Enumerable {
         require(!_coderExists[name]);
         require(coders.length < 5);
         // nft 권리와 함께 들어갈 이름
-        coders.push(coder(coders.length,name,0));
+        coders.push(coder(coders.length,name,0,false));
         // coders가 어디에 있는지 찾기
         uint _id = coders.length - 1;
         _mint(msg.sender, _id);
@@ -44,8 +45,14 @@ contract CryptoCoders is ERC721, ERC721Enumerable {
         require(_coderid >= 0);
         // 투표 진행 
         voters[msg.sender] = true;
+        VotingCount++;
         // 투표수 증가
-        coders[_coderid].voteCount++;
+  coders[_coderid].voteCount++;
+  if(coders[_coderid].voteCount == 3){
+        ElectionResult = true;
+        coders[_coderid].result = true;
+  }
+
         // total 득표수 증가
         // numVote++;
         // emit sendMsg("투표 complete");
