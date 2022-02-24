@@ -1,68 +1,100 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# BlockChainProject
 
-## Available Scripts
+## 프로젝트 팀명 : NamingCenter
 
-In the project directory, you can run:
+### :relaxed: NamingCenter
 
-### `yarn start`
+### 리액트를 활용한 solidity 투표앱 만들기
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 프로젝트 시작일 : 2022-02-19
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+1. 모듈 설치
+   cd client
+   npm i
+   truffle compile
+   truffle migrate --reset
 
-### `yarn test`
+2. 서버 열기
+   npm start
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 목차
 
-### `yarn build`
+[1.개요](#개요)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+[2.목적](#목적)
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+- 기존 서비스와의 차별점
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+[3.전체 소스 코드](#전체-소스-코드-click)
 
-### `yarn eject`
+[4.사용한 기술](#사용한-기술)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+[5.주요 기능](#주요-기능)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+[6.발생한 이슈 & 해결 방법](#발생한-이슈--해결-방법)
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+[7.상세 설명](#상세-설명)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- DB 구조 (ERD)
 
-## Learn More
+- 전체 흐름도
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- 프로젝트 설명 PPT
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+[8.참여인원](#참여-인원-4명)
 
-### Code Splitting
+---
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+### 개요
 
-### Analyzing the Bundle Size
+선거 컨트랙트 작성과 Web3 사용 웹페이지 컨트랙트 연결
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+### 목적
 
-### Making a Progressive Web App
+> 수업시간에 배웠던 솔리디티를 직접 구현하며 내용복습
+> 트러플 언박스로 기본틀 구성
+> Contract 의 작동 확인 및 컴파일 여부
+> Dicebear 랜덤 아바타 활용
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+### 사용한 기술 요약
 
-### Advanced Configuration
+Ethereum | Solidity
+ganache
+truffle
+Metamask
+React (클라이언트)
+Web3.JS
+NodeJS
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+### 사용 모듈 (server) :
 
-### Deployment
+    "@openzeppelin/contracts": "^4.5.0",
+    "@truffle/hdwallet-provider": "^2.0.3",
+    "@uniswap/v2-core": "^1.0.1",
+    "assert": "^2.0.0",
+    "bootstrap": "^5.1.3",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "react-bootstrap": "^2.1.2"
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+### 사용 모듈 (client) :
 
-### `yarn build` fails to minify
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "3.2.0",
+    "web3": "^1.6.1"
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### 주요 기능
+
+- 후보자 등록
+- 후보자 등록인원수 제한(5명까지)
+- 투표 (계정당 투표권 1장)
+- 투표결과 (당선)
+
+## 발생한 이슈와 해결방법
+
+다른 OS 환경에서 테스트 중 빈번한 모듈에러
+
+> > Remix IDE에서만 컴파일 됨 (vscode 에서 확장프로그램, solc로 컴파일 불가)
+> > 웹에서 컨트랙트 함수를 호출하려면 web3 객체 및 contract 가 윈두우 상에서 호출할 수 있어야함.
+> > 웹에서 컨트랙트 함수를 호출 시 send 나 call로 호출해야 함
