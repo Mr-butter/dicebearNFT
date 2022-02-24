@@ -1,6 +1,6 @@
 # BlockChainProject
 
-## 프로젝트 팀명 : NamingCenter
+## 프로젝트 팀명 : 프로젝트 작명소
 
 ### :relaxed: NamingCenter
 
