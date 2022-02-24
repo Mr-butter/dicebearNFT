@@ -7,6 +7,7 @@ import "./App.css";
 
 const App = () => {
   const [contract, setContract] = useState(null);
+  const [testAccounts, setTestAccounts] = useState([]);
   const [account, setAccount] = useState("");
   const [coders, setCoders] = useState([]);
   const [mintText, setMintText] = useState("");
@@ -25,6 +26,7 @@ const App = () => {
   const loadWeb3Account = async (web3) => {
     const accounts = await web3.eth.getAccounts();
     console.log(accounts);
+    setTestAccounts(accounts);
     if (accounts) {
       setAccount(accounts[0]);
     }
@@ -33,6 +35,8 @@ const App = () => {
   const loadWebContract = async (web3) => {
     const networkId = await web3.eth.net.getId();
     const networkData = CryptoCoder.networks[networkId];
+    console.log(networkId);
+    console.log(networkData);
     if (networkData) {
       const abi = CryptoCoder.abi;
       const address = networkData.address;
@@ -41,13 +45,6 @@ const App = () => {
       console.log(contract);
       return contract;
     }
-  };
-
-  const updateData = async () => {
-    const web3 = await getWeb3();
-    await loadWeb3Account(web3);
-    let contract = await loadWebContract(web3);
-    await loadNFTS(contract);
   };
 
   // load WEB3 account from Metmask
@@ -61,16 +58,26 @@ const App = () => {
     await loadNFTS(contract);
   }, []);
 
-  const mint = () => {
+  const mint = async () => {
     console.log(mintText);
-    contract.methods.mint(mintText).send({ from: account }, (error) => {
-      console.log("worked");
-      if (!error) {
-        // setCoders([...coders, mintText]);
-        setMintText("");
-      }
-    });
+    await contract.methods
+      .mint(mintText)
+      .send({ from: account, gas: 3000000 }, (error) => {
+        if (!error) {
+          console.log("worked");
+          // setCoders([...coders, mintText]);
+          setMintText("");
+        } else {
+          console.log(error);
+        }
+      })
+      .then(async () => {
+        await loadNFTS(contract);
+      });
   };
+  async function testfunc() {
+    console.log(coders);
+  }
 
   return (
     <div>
@@ -78,7 +85,20 @@ const App = () => {
         <a className="navbar-brand" href="#">
           제20대 대통령선거
         </a>
-        <span>{account}</span>
+        <span>
+          <select
+            id="accounts"
+            onChange={(e) => {
+              setAccount(e.target.value);
+            }}
+          >
+            {testAccounts.map((account, key) => (
+              <option value={account} key={key}>
+                {account}
+              </option>
+            ))}
+          </select>
+        </span>
       </nav>
       <div className="container-fluid mt-5">
         <div className="row">
@@ -109,6 +129,14 @@ const App = () => {
                 <button onClick={mint} className="btn btn-primary">
                   등록
                 </button>
+                <button
+                  onClick={async () => {
+                    const result = await contract.methods.totalSupply().call();
+                    console.log(result);
+                  }}
+                >
+                  테스트
+                </button>
               </div>
             </div>
             <div className="col-8 d-flex justify-content-center flex-wrap">
@@ -119,15 +147,54 @@ const App = () => {
                 >
                   <img
                     width="150"
-                    src={`https://avatars.dicebear.com/api/micah/${coder.name.replace(
+                    src={`https://avatars.dicebear.com/api/pixel-art/${coder.name.replace(
                       "#",
                       ""
                     )}.svg`}
+                    value={coder.id}
+                    onClick={async (e) => {
+                      const coderid = e.target.getAttribute("value");
+                      const voter = await contract.methods
+                        .voters(account)
+                        .call();
+                      const totalSupply = await contract.methods
+                        .totalSupply()
+                        .call();
+                      const ElectionResult = await contract.methods
+                        .ElectionResult()
+                        .call();
+                      if (!ElectionResult) {
+                        if (parseInt(totalSupply) === 5) {
+                          if (!voter) {
+                            await contract.methods
+                              .vote(coderid)
+                              .send(
+                                { from: account, gas: 3000000 },
+                                (error) => {
+                                  if (!error) {
+                                    console.log("worked");
+                                  }
+                                }
+                              )
+                              .then(async () => {
+                                await loadNFTS(contract);
+                              });
+                          } else {
+                            alert("이미투표권을 사용하셨습니다.");
+                          }
+                        } else {
+                          alert("후보자가 아직 등록되지 않았습니다.");
+                        }
+                      } else {
+                        alert("선거가 종료되었습니다.");
+                      }
+                    }}
                   />
 
-                  <span>{coder.name}</span>
-                  <span>{coder.voteCount}</span>
-                  <button type="submit">제출하기</button>
+                  <span>
+                    {coder.name} {coder.result ? "당선" : ""}
+                  </span>
+                  <span>득표수 : {coder.voteCount}</span>
                 </div>
               ))}
             </div>
