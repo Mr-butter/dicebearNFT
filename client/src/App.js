@@ -62,7 +62,7 @@ const App = () => {
     console.log(mintText);
     await contract.methods
       .mint(mintText)
-      .send({ from: account, gas: 3000000 }, (error) => {
+      .send({ from: account, gas: 5500000 }, (error) => {
         if (!error) {
           console.log("worked");
           // setCoders([...coders, mintText]);
