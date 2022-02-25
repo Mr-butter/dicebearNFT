@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CryptoCoder from "./contracts/CryptoCoders.json";
+import CryptoCoder from "./contracts/Election.json";
 import getWeb3 from "./getWeb3";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -11,13 +11,14 @@ const App = () => {
     const [account, setAccount] = useState("");
     const [coders, setCoders] = useState([]);
     const [mintText, setMintText] = useState("");
+    const [totalSupply, setTotalSupply] = useState("");
 
     const loadNFTS = async (contract) => {
-        const totalSupply = await contract.methods.totalSupply().call();
-
+        const totalNum = await contract.methods.totalSupply().call();
+        setTotalSupply(totalNum);
         let nfts = [];
-        for (let i = 0; i < totalSupply; i++) {
-            let coder = await contract.methods.coders(i).call();
+        for (let i = 0; i < totalNum; i++) {
+            let coder = await contract.methods.Candidates(i).call();
             nfts.push(coder);
         }
         setCoders(nfts);
@@ -75,10 +76,6 @@ const App = () => {
             });
     };
 
-    async function testfunc() {
-        console.log(coders);
-    }
-
     return (
         <div>
             <nav className="navbar navbar-light bg-light px-4">
@@ -118,7 +115,7 @@ const App = () => {
                                 </button>
                                 <button
                                     onClick={async () => {
-                                        const result = await contract.methods.totalSupply().call();
+                                        const result = await contract.methods.vote(0).estimateGas();
                                         console.log(result);
                                     }}
                                 >
@@ -138,14 +135,18 @@ const App = () => {
                                             const voter = await contract.methods.voters(account).call();
                                             const totalSupply = await contract.methods.totalSupply().call();
                                             const ElectionResult = await contract.methods.ElectionResult().call();
+                                            const gas = await contract.methods.vote(coderid).estimateGas();
                                             if (!ElectionResult) {
                                                 if (parseInt(totalSupply) === 5) {
                                                     if (!voter) {
                                                         await contract.methods
                                                             .vote(coderid)
-                                                            .send({ from: account, gas: 3000000 }, (error) => {
+                                                            .send({ from: account, gas: gas }, (error) => {
                                                                 if (!error) {
                                                                     console.log("worked");
+                                                                } else {
+                                                                    console.log(error);
+                                                                    window.alert("후보자 등록이 완료되었습니다.");
                                                                 }
                                                             })
                                                             .then(async () => {
