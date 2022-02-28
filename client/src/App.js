@@ -119,7 +119,7 @@ const App = () => {
                                         console.log(result);
                                     }}
                                 >
-                                    테스트
+                                    이거바꾸기
                                 </button>
                             </div>
                         </div>
