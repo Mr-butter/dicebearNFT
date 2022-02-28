@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CryptoCoder from "./contracts/Election.json";
+import Election from "./contracts/Election.json";
 import getWeb3 from "./getWeb3";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -35,11 +35,11 @@ const App = () => {
 
     const loadWebContract = async (web3) => {
         const networkId = await web3.eth.net.getId();
-        const networkData = CryptoCoder.networks[networkId];
+        const networkData = Election.networks[networkId];
         console.log(networkId);
         console.log(networkData);
         if (networkData) {
-            const abi = CryptoCoder.abi;
+            const abi = Election.abi;
             const address = networkData.address;
             const contract = new web3.eth.Contract(abi, address);
             setContract(contract);
